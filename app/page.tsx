@@ -124,7 +124,10 @@ export default function Home() {
     if(type === "checkbox") {
       setCheckboxes(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData(prev => ({
+        ...prev, 
+        [name]: type==="number" ? Number(value) : value
+      }));
     }
   };
 
@@ -139,7 +142,7 @@ export default function Home() {
     fields.forEach(f=>{
       const naoKey = f.name+"Nao";
       if(f.hasNao && item.checks[naoKey]) return;
-      if(f.name==="epsaError") texto += `EPSA  - Error Code: ${item.form.epsaError}\nEPSA  - Validation Code: ${item.form.epsaValidation}\n`;
+      if(f.name==="epsaError") texto += item.checks.epsaNao ? "" : `EPSA - Error Code: ${item.form.epsaError}\nEPSA - Validation Code: ${item.form.epsaValidation}\n`;
       else if(f.name==="epsaValidation") return;
       else texto += `${(lang==="pt"?f.labelPT:f.labelES)}: ${item.form[f.name]}\n`;
     });
@@ -185,25 +188,43 @@ export default function Home() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {fields.map(f=>{
-          // EPSA group
+          // EPSA block
           if(f.name==="epsaError" || f.name==="epsaValidation"){
             if(f.name==="epsaError"){
-              const naoKey = "epsaNao";
               return (
                 <div key="epsa" className="sm:col-span-2 border rounded-lg p-3">
                   <label className="font-medium mb-2 block">EPSA</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
                       <label className="block font-medium mb-1">Error Code</label>
-                      <input type="text" name="epsaError" value={formData.epsaError} onChange={handleChange} className={inputClass} disabled={checkboxes.epsaNao}/>
+                      <input
+                        type="text"
+                        name="epsaError"
+                        value={String(formData.epsaError)}
+                        onChange={handleChange}
+                        className={inputClass}
+                        disabled={checkboxes.epsaNao}
+                      />
                     </div>
                     <div>
                       <label className="block font-medium mb-1">Validation Code</label>
-                      <input type="text" name="epsaValidation" value={formData.epsaValidation} onChange={handleChange} className={inputClass} disabled={checkboxes.epsaNao}/>
+                      <input
+                        type="text"
+                        name="epsaValidation"
+                        value={String(formData.epsaValidation)}
+                        onChange={handleChange}
+                        className={inputClass}
+                        disabled={checkboxes.epsaNao}
+                      />
                     </div>
                   </div>
                   <label className="flex items-center gap-2 mt-1">
-                    <input type="checkbox" name="epsaNao" checked={checkboxes.epsaNao} onChange={handleChange}/> {t.naoSeAplica}
+                    <input
+                      type="checkbox"
+                      name="epsaNao"
+                      checked={checkboxes.epsaNao}
+                      onChange={handleChange}
+                    /> {t.naoSeAplica}
                   </label>
                 </div>
               );
@@ -217,15 +238,34 @@ export default function Home() {
           return (
             <div key={f.name} className={span}>
               <label className="block font-medium mb-1">{lang==="pt"?f.labelPT:f.labelES}</label>
-              {f.type==="textarea"?
-                <textarea name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass} rows={f.rows||3} disabled={f.hasNao && checkboxes[naoKey]}/>
-                : f.type==="select"?
-                <select name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass}>
+              {f.type==="textarea" ?
+                <textarea
+                  name={f.name}
+                  value={String(formData[f.name])}
+                  onChange={handleChange}
+                  className={inputClass}
+                  rows={f.rows||3}
+                  disabled={f.hasNao && checkboxes[naoKey]}
+                />
+                : f.type==="select" ?
+                <select
+                  name={f.name}
+                  value={String(formData[f.name])}
+                  onChange={handleChange}
+                  className={inputClass}
+                >
                   <option value="">{t.selecione}</option>
                   {f.options?.map(o=><option key={o} value={o}>{o}</option>)}
                 </select>
                 :
-                <input type={f.type} name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass} disabled={f.hasNao && checkboxes[naoKey]}/>
+                <input
+                  type={f.type}
+                  name={f.name}
+                  value={String(formData[f.name])}
+                  onChange={handleChange}
+                  className={inputClass}
+                  disabled={f.hasNao && checkboxes[naoKey]}
+                />
               }
               {f.hasNao && <label className="flex items-center gap-2 mt-1"><input type="checkbox" name={naoKey} checked={checkboxes[naoKey]} onChange={handleChange}/> {t.naoSeAplica}</label>}
             </div>
@@ -250,7 +290,7 @@ export default function Home() {
             {fields.map(f=>{
               const naoKey = f.name+"Nao";
               if(f.hasNao && checkboxes[naoKey]) return null;
-              if(f.name==="epsaError") return `EPSA Code - Error Code: ${formData.epsaError}\nEPSA Code - Validation Code: ${formData.epsaValidation}\n`;
+              if(f.name==="epsaError") return checkboxes.epsaNao ? null : `EPSA - Error Code: ${formData.epsaError}\nEPSA - Validation Code: ${formData.epsaValidation}\n`;
               if(f.name==="epsaValidation") return null;
               return `${(lang==="pt"?f.labelPT:f.labelES)}: ${formData[f.name]}\n`;
             })}
@@ -284,7 +324,7 @@ export default function Home() {
                 {fields.map(f=>{
                   const naoKey = f.name+"Nao";
                   if(f.hasNao && item.checks[naoKey]) return null;
-                  if(f.name==="epsaError") return `EPSA - Error Code: ${item.form.epsaError}\nEPSA - Validation Code: ${item.form.epsaValidation}\n`;
+                  if(f.name==="epsaError") return item.checks.epsaNao ? null : `EPSA - Error Code: ${item.form.epsaError}\nEPSA - Validation Code: ${item.form.epsaValidation}\n`;
                   if(f.name==="epsaValidation") return null;
                   return `${(lang==="pt"?f.labelPT:f.labelES)}: ${item.form[f.name]}\n`;
                 })}
