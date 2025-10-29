@@ -172,6 +172,7 @@ export default function Home() {
 
   // ================== JSX ==================
   return (
+    <>
     <div className={`max-w-5xl mx-auto p-6 rounded-2xl mt-8 border shadow-md transition-colors ${theme==="dark"?"bg-gray-900 border-gray-700 text-gray-100":"bg-white border-gray-200 text-gray-900"}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -334,5 +335,10 @@ export default function Home() {
         </div>
       )}
     </div>
+
+    <footer className={`mt-8 py-4 text-center rounded-xl transition-colors ${theme==="dark"?"bg-gray-800 text-gray-300 border-t border-gray-700":"bg-gray-50 text-gray-700 border-t border-gray-200"}`}>
+      Developed by Parícia Souza 💙 2025
+    </footer>
+    </>
   );
 }
