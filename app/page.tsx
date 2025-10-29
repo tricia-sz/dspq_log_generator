@@ -14,7 +14,11 @@ interface Field {
 }
 
 interface FormData {
-  [key: string]: string | boolean;
+  [key: string]: string | number;
+}
+
+interface CheckboxesData {
+  [key: string]: boolean;
 }
 
 type Lang = "pt" | "es";
@@ -43,7 +47,7 @@ const fields: Field[] = [
   { name: "ppidDoa", type: "text", labelPT: "PPID DOA", labelES: "PPID DOA", hasNao:true },
   { name: "fluxoDtc", type: "text", labelPT: "Fluxo DTC", labelES: "Flujo DTC", hasNao:true },
   { name: "sugestaoBoomi", type: "text", labelPT: "Sugestão Boomi", labelES: "Sugerencia Boomi", hasNao:true },
-  { name: "novoChamado", type: "number", labelPT: "Novo Chamado", labelES: "Nuevo Ticket", hasNao:true },
+  { name: "novoChamado", type: "number", labelPT: "Nº Novo Chamado (DPS)", labelES: "Nº Nuevo Ticket  (DPS)", hasNao:true },
   { name: "endereco", type: "textarea", labelPT: "Endereço", labelES: "Dirección", rows:3, hasNao:true },
   { name: "instructions", type: "textarea", labelPT: "Instructions", labelES: "Instrucciones", rows:6, hasNao:true },
 ];
@@ -62,13 +66,19 @@ const initialInstructions = {
 };
 
 export default function Home() {
-  const [formData, setFormData] = useState<FormData>(()=>{
+  const [formData, setFormData] = useState<FormData>(() => {
     const init: FormData = {};
     fields.forEach(f=>{
       init[f.name] = f.name==="instructions"?initialInstructions.pt:"";
-      if(f.hasNao) init[f.name+"Nao"]=false;
     });
-    init["epsaNao"]=false;
+    return init;
+  });
+
+  const [checkboxes, setCheckboxes] = useState<CheckboxesData>(() => {
+    const init: CheckboxesData = { epsaNao: false };
+    fields.forEach(f=>{
+      if(f.hasNao) init[f.name+"Nao"] = false;
+    });
     return init;
   });
 
@@ -76,15 +86,16 @@ export default function Home() {
   const [theme,setTheme] = useState<"light"|"dark">("light");
   const [showResumo,setShowResumo] = useState(false);
   const [copied,setCopied] = useState(false);
-  const [historico,setHistorico] = useState<FormData[]>([]);
+  const [historico,setHistorico] = useState<{form: FormData, checks: CheckboxesData}[]>([]);
 
   const t = {
-    pt: { naoSeAplica:"Não se aplica", selecione:"Selecione...", gerarLog:"Gerar Log", limparFormulario:"🧹 Limpar Formulário", copiar:"📋 Copiar", copiado:"✅ Copiado!", historicoTitulo:"Histórico de Logs (máx. 6)"},
-    es: { naoSeAplica:"No se aplica", selecione:"Seleccione...", gerarLog:"Generar Registro", limparFormulario:"🧹 Limpiar Formulario", copiar:"📋 Copiar", copiado:"✅ ¡Copiado!", historicoTitulo:"Historial de Registros (máx. 6)"}
+    pt: { naoSeAplica:"Não se aplica", selecione:"Selecione...", gerarLog:"Gerar Log", limparFormulario:"🧹 Limpar Formulário", copiar:"📋 Copiar", copiado:"✅ Copiado!", historicoTitulo:"Histórico de Logs (máx. 10)"},
+    es: { naoSeAplica:"No se aplica", selecione:"Seleccione...", gerarLog:"Generar Registro", limparFormulario:"🧹 Limpiar Formulario", copiar:"📋 Copiar", copiado:"✅ ¡Copiado!", historicoTitulo:"Historial de Registros (máx. 10)"}
   }[lang];
 
   const inputClass = `w-full rounded-lg p-2 border focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 bg-gray-50 border-gray-300 text-gray-900`;
 
+  // ======== EFFECTS ========
   useEffect(()=>{
     const savedTheme = localStorage.getItem("theme") as "light"|"dark"|null;
     const savedHistorico = localStorage.getItem("historico");
@@ -92,34 +103,45 @@ export default function Home() {
     if(savedHistorico) setHistorico(JSON.parse(savedHistorico));
   },[]);
 
-  useEffect(()=>{ localStorage.setItem("theme",theme); document.documentElement.classList.toggle("dark",theme==="dark"); },[theme]);
+  useEffect(()=>{ 
+    localStorage.setItem("theme",theme); 
+    document.documentElement.classList.toggle("dark",theme==="dark"); 
+  },[theme]);
+
   useEffect(()=>{ localStorage.setItem("historico",JSON.stringify(historico)); },[historico]);
 
   useEffect(()=>{
     setFormData(prev=>{
       const naoKey = "instructionsNao";
-      if(prev[naoKey]) return prev;
+      if(checkboxes[naoKey]) return prev;
       return {...prev, instructions: initialInstructions[lang]};
     });
-  },[lang]);
+  },[lang, checkboxes]);
 
-  const handleChange = (e:ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>)=>{
-    const {name,value,type,checked} = e.target;
-    setFormData(prev=>({...prev,[name]:type==="checkbox"?checked:value}));
+  // ====== HANDLECHANGE ======
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, type, value } = e.target;
+    if(type === "checkbox") {
+      setCheckboxes(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = (e:FormEvent)=>{
     e.preventDefault();
     setShowResumo(true);
-    setHistorico(prev=>[formData,...prev].slice(0,6));
+    setHistorico(prev=>[{ form: formData, checks: checkboxes },...prev].slice(0,10));
   };
 
-  const handleCopy = async (data:FormData)=>{
+  const handleCopy = async (item: { form: FormData, checks: CheckboxesData })=>{
     let texto = "";
     fields.forEach(f=>{
       const naoKey = f.name+"Nao";
-      if(f.hasNao && data[naoKey] as boolean) return;
-      texto += `${(lang==="pt"?f.labelPT:f.labelES).charAt(0).toUpperCase() + (lang==="pt"?f.labelPT:f.labelES).slice(1)}: ${data[f.name]}\n`;
+      if(f.hasNao && item.checks[naoKey]) return;
+      if(f.name==="epsaError") texto += `EPSA  - Error Code: ${item.form.epsaError}\nEPSA  - Validation Code: ${item.form.epsaValidation}\n`;
+      else if(f.name==="epsaValidation") return;
+      else texto += `${(lang==="pt"?f.labelPT:f.labelES)}: ${item.form[f.name]}\n`;
     });
     await navigator.clipboard.writeText(texto.trim());
     setCopied(true);
@@ -127,13 +149,16 @@ export default function Home() {
   };
 
   const limparFormulario = ()=>{
-    const cleared:FormData = {};
+    const cleared: FormData = {};
     fields.forEach(f=>{
       cleared[f.name] = f.name==="instructions"?initialInstructions[lang]:"";
-      if(f.hasNao) cleared[f.name+"Nao"]=false;
     });
-    cleared["epsaNao"]=false;
+    const clearedChecks: CheckboxesData = { epsaNao: false };
+    fields.forEach(f=>{
+      if(f.hasNao) clearedChecks[f.name+"Nao"] = false;
+    });
     setFormData(cleared);
+    setCheckboxes(clearedChecks);
     setShowResumo(false);
   };
 
@@ -142,6 +167,7 @@ export default function Home() {
     setHistorico([]);
   };
 
+  // ================== JSX ==================
   return (
     <div className={`max-w-5xl mx-auto p-6 rounded-2xl mt-8 border shadow-md transition-colors ${theme==="dark"?"bg-gray-900 border-gray-700 text-gray-100":"bg-white border-gray-200 text-gray-900"}`}>
       {/* Header */}
@@ -165,19 +191,19 @@ export default function Home() {
               const naoKey = "epsaNao";
               return (
                 <div key="epsa" className="sm:col-span-2 border rounded-lg p-3">
-                  <label className="font-medium mb-2 block">EPSA Code</label>
+                  <label className="font-medium mb-2 block">EPSA</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
                       <label className="block font-medium mb-1">Error Code</label>
-                      <input type="text" name="epsaError" value={formData.epsaError} onChange={handleChange} className={inputClass} disabled={formData.epsaNao}/>
+                      <input type="text" name="epsaError" value={formData.epsaError} onChange={handleChange} className={inputClass} disabled={checkboxes.epsaNao}/>
                     </div>
                     <div>
                       <label className="block font-medium mb-1">Validation Code</label>
-                      <input type="text" name="epsaValidation" value={formData.epsaValidation} onChange={handleChange} className={inputClass} disabled={formData.epsaNao}/>
+                      <input type="text" name="epsaValidation" value={formData.epsaValidation} onChange={handleChange} className={inputClass} disabled={checkboxes.epsaNao}/>
                     </div>
                   </div>
                   <label className="flex items-center gap-2 mt-1">
-                    <input type="checkbox" name="epsaNao" checked={formData.epsaNao} onChange={handleChange}/> {t.naoSeAplica}
+                    <input type="checkbox" name="epsaNao" checked={checkboxes.epsaNao} onChange={handleChange}/> {t.naoSeAplica}
                   </label>
                 </div>
               );
@@ -192,16 +218,16 @@ export default function Home() {
             <div key={f.name} className={span}>
               <label className="block font-medium mb-1">{lang==="pt"?f.labelPT:f.labelES}</label>
               {f.type==="textarea"?
-                <textarea name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass} rows={f.rows||3} disabled={f.hasNao && formData[naoKey] as boolean}/>
+                <textarea name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass} rows={f.rows||3} disabled={f.hasNao && checkboxes[naoKey]}/>
                 : f.type==="select"?
                 <select name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass}>
                   <option value="">{t.selecione}</option>
                   {f.options?.map(o=><option key={o} value={o}>{o}</option>)}
                 </select>
                 :
-                <input type={f.type} name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass} disabled={f.hasNao && formData[naoKey] as boolean}/>
+                <input type={f.type} name={f.name} value={formData[f.name]} onChange={handleChange} className={inputClass} disabled={f.hasNao && checkboxes[naoKey]}/>
               }
-              {f.hasNao && <label className="flex items-center gap-2 mt-1"><input type="checkbox" name={naoKey} checked={formData[naoKey] as boolean} onChange={handleChange}/> {t.naoSeAplica}</label>}
+              {f.hasNao && <label className="flex items-center gap-2 mt-1"><input type="checkbox" name={naoKey} checked={checkboxes[naoKey]} onChange={handleChange}/> {t.naoSeAplica}</label>}
             </div>
           );
         })}
@@ -218,15 +244,15 @@ export default function Home() {
         <div className={`mt-8 rounded-xl p-4 border ${theme==="dark"?"bg-gray-800 border-gray-700":"bg-gray-50 border-gray-200"}`}>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-semibold">{t.historicoTitulo}</h3>
-            <button onClick={()=>handleCopy(formData)} type="button" className={`text-sm px-3 py-1 rounded-md font-medium border transition-colors duration-200 ${copied?"bg-green-600 text-white border-green-600":"bg-blue-600 text-white border-blue-600 hover:bg-blue-700"}`}>{copied? t.copiado:t.copiar}</button>
+            <button onClick={()=>handleCopy({form: formData, checks: checkboxes})} type="button" className={`text-sm px-3 py-1 rounded-md font-medium border transition-colors duration-200 ${copied?"bg-green-600 text-white border-green-600":"bg-blue-600 text-white border-blue-600 hover:bg-blue-700"}`}>{copied? t.copiado:t.copiar}</button>
           </div>
           <pre className="text-sm whitespace-pre-wrap">
             {fields.map(f=>{
               const naoKey = f.name+"Nao";
-              if(f.hasNao && formData[naoKey] as boolean) return null;
+              if(f.hasNao && checkboxes[naoKey]) return null;
               if(f.name==="epsaError") return `EPSA Code - Error Code: ${formData.epsaError}\nEPSA Code - Validation Code: ${formData.epsaValidation}\n`;
               if(f.name==="epsaValidation") return null;
-              return `${(lang==="pt"?f.labelPT:f.labelES).charAt(0).toUpperCase() + (lang==="pt"?f.labelPT:f.labelES).slice(1)}: ${formData[f.name]}\n`;
+              return `${(lang==="pt"?f.labelPT:f.labelES)}: ${formData[f.name]}\n`;
             })}
           </pre>
         </div>
@@ -242,7 +268,7 @@ export default function Home() {
           {historico.map((item, idx) => (
             <details key={idx} className="mb-2 p-2 border rounded-md">
               <summary className="cursor-pointer font-medium flex justify-between items-center">
-                <span>{item.nomeTecnico} — {item.numeroChamado} / {item.serviceTag}</span>
+                <span>{item.form.nomeTecnico} — {item.form.numeroChamado} / {item.form.serviceTag}</span>
                 <button
                   type="button"
                   className="ml-2 text-sm px-2 py-1 rounded-md font-medium border bg-blue-600 text-white hover:bg-blue-700"
@@ -257,10 +283,10 @@ export default function Home() {
               <pre className="text-sm whitespace-pre-wrap mt-1">
                 {fields.map(f=>{
                   const naoKey = f.name+"Nao";
-                  if(f.hasNao && item[naoKey] as boolean) return null;
-                  if(f.name==="epsaError") return `EPSA Code - Error Code: ${item.epsaError}\nEPSA Code - Validation Code: ${item.epsaValidation}\n`;
+                  if(f.hasNao && item.checks[naoKey]) return null;
+                  if(f.name==="epsaError") return `EPSA - Error Code: ${item.form.epsaError}\nEPSA - Validation Code: ${item.form.epsaValidation}\n`;
                   if(f.name==="epsaValidation") return null;
-                  return `${(lang==="pt"?f.labelPT:f.labelES).charAt(0).toUpperCase() + (lang==="pt"?f.labelPT:f.labelES).slice(1)}: ${item[f.name]}\n`;
+                  return `${(lang==="pt"?f.labelPT:f.labelES)}: ${item.form[f.name]}\n`;
                 })}
               </pre>
             </details>
