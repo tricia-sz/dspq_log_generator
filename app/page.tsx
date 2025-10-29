@@ -90,7 +90,7 @@ export default function Home() {
 
   const t = {
     pt: { naoSeAplica:"Não se aplica", selecione:"Selecione...", gerarLog:"Gerar Log", limparFormulario:"🧹 Limpar Formulário", copiar:"📋 Copiar", copiado:"✅ Copiado!", historicoTitulo:"Histórico de Logs (máx. 10)"},
-    es: { naoSeAplica:"No se aplica", selecione:"Seleccione...", gerarLog:"Generar Registro", limparFormulario:"🧹 Limpiar Formulario", copiar:"📋 Copiar", copiado:"✅ ¡Copiado!", historicoTitulo:"Historial de Registros (máx. 10)"}
+    es: { naoSeAplica:"No se aplica", selecione:"Seleccione...", gerarLog:"Generar Registro", limparFormulario:"🧹 Borrar Formulario", copiar:"📋 Copiar", copiado:"✅ ¡Copiado!", historicoTitulo:"Historial de Registros (máx. 10)"}
   }[lang];
 
   const inputClass = `w-full rounded-lg p-2 border focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 bg-gray-50 border-gray-300 text-gray-900`;
@@ -304,7 +304,7 @@ export default function Home() {
         <div className={`mt-8 rounded-xl p-4 border ${theme==="dark"?"bg-gray-800 border-gray-700":"bg-gray-50 border-gray-200"}`}>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-semibold">{t.historicoTitulo}</h3>
-            <button onClick={limparHistorico} className="text-sm text-red-600 hover:underline">🗑️</button>
+            <button onClick={limparHistorico} className="text-sm text-red-600 hover:underline">🗑️ Reset</button>
           </div>
           {historico.map((item, idx) => (
             <details key={idx} className="mb-2 p-2 border rounded-md">
