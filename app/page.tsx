@@ -29,6 +29,7 @@ type Lang = "pt" | "es";
 
 const fields: Field[] = [
   { name: "sessionId", type: "text", labelPT: "Session ID", labelES: "Session ID", hasNao: true, small: true },
+  { name: "tecnicoLocal", type: "select", labelPT: "Técnico está no local", labelES: "El técnico está en el sitio",small: true , options: ["Sim", "Não", "Balcão"] },
   { name: "nomeTecnico", type: "text", labelPT: "Nome do Técnico", labelES: "Nombre del Técnico" },
   { name: "prestadora", type: "select", labelPT: "Prestadora", labelES: "Proveedora", options: ["UNY", "Proxxi", "SIC"], small: true },
   { name: "techId", type: "number", labelPT: "Tech ID", labelES: "ID Técnico", small: true },
@@ -36,8 +37,6 @@ const fields: Field[] = [
   { name: "caso", type: "text", labelPT: "Caso", labelES: "Caso", small: true },
   { name: "serviceTag", type: "text", labelPT: "Service Tag", labelES: "Service Tag", small: true },
   { name: "modelo", type: "text", labelPT: "Modelo", labelES: "Modelo", small: true },
-  { name: "garantia", type: "select", labelPT: "Garantia", labelES: "Garantía", small: true ,options: ["Basic", "Pro Support","Outra", "Expirada",], },
-  { name: "tecnicoLocal", type: "select", labelPT: "Técnico está no local", labelES: "El técnico está en el sitio",small: true , options: ["Sim", "Não", "Balcão"] },
   { name: "falhaInicial", type: "text", labelPT: "Falha Inicial", labelES: "Fallo inicial" },
   { name: "pecasTrocadas", type: "textarea", labelPT: "Peças Trocadas", labelES: "Piezas Reemplazadas", rows: 3, hasNao: true },
   { name: "versaoBios", type: "text", labelPT: "Versão BIOS", labelES: "Versión BIOS", hasNao: true, small: true },
