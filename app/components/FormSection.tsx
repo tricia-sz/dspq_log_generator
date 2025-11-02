@@ -42,7 +42,6 @@ const fields: Field[] = [
   { name: "pecasTrocadas", type: "textarea", labelPT: "Peças Trocadas", labelES: "Piezas Reemplazadas", rows: 3, hasNao: true },
   { name: "versaoBios", type: "text", labelPT: "Versão BIOS", labelES: "Versión BIOS", hasNao: true, small: true },
   { name: "epsaError", type: "text", labelPT: "Error Code", labelES: "Error Code" },
-  { name: "epsaValidation", type: "text", labelPT: "Validation Code", labelES: "Validation Code" },
   { name: "reportAtual", type: "textarea", labelPT: "Report Atual", labelES: "Informe Actual", rows: 4 },
   { name: "anexos", type: "textarea", labelPT: "Anexos enviado pelo técnico", labelES: "Archivos adjuntos enviados por el técnico", rows: 3, hasNao: true },
   { name: "ppidDoa", type: "text", labelPT: "PPID DOA", labelES: "PPID DOA", hasNao: true },
@@ -64,6 +63,33 @@ const initialInstructions = {
 - Si persiste o hay alguna falla adicional, reportar directamente a DSPQ`,
 };
 
+const translations = {
+  pt: {
+    naoSeAplica: "Não se aplica",
+    selecione: "Selecione...",
+    gerarLog: "Gerar Log",
+    limparFormulario: "🧹 Limpar Formulário",
+    copiar: "📋 Copiar",
+    copiado: "✅ Copiado!",
+    historicoTitulo: "Histórico de Logs (máx. 10)",
+    epsa: "EPSA",
+    errorCode: "Error Code",
+    validationCode: "Validation Code",
+  },
+  es: {
+    naoSeAplica: "No se aplica",
+    selecione: "Seleccione...",
+    gerarLog: "Generar Registro",
+    limparFormulario: "🧹 Borrar Formulario",
+    copiar: "📋 Copiar",
+    copiado: "✅ ¡Copiado!",
+    historicoTitulo: "Historial de Registros (máx. 10)",
+    epsa: "EPSA",
+    errorCode: "Error Code",
+    validationCode: "Validation Code",
+  },
+};
+
 export default function FormSection({ lang, theme }: FormSectionProps) {
   const [formData, setFormData] = useState<FormData>({});
   const [checkboxes, setCheckboxes] = useState<CheckboxesData>({});
@@ -71,17 +97,11 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
   const [copied, setCopied] = useState(false);
   const [historico, setHistorico] = useState<{ form: FormData; checks: CheckboxesData }[]>([]);
 
-  const t = {
-    pt: { naoSeAplica: "Não se aplica", selecione: "Selecione...", gerarLog: "Gerar Log", limparFormulario: "🧹 Limpar Formulário", copiar: "📋 Copiar", copiado: "✅ Copiado!", historicoTitulo: "Histórico de Logs (máx. 10)" },
-    es: { naoSeAplica: "No se aplica", selecione: "Seleccione...", gerarLog: "Generar Registro", limparFormulario: "🧹 Borrar Formulario", copiar: "📋 Copiar", copiado: "✅ ¡Copiado!", historicoTitulo: "Historial de Registros (máx. 10)" },
-  }[lang];
-
   const inputClass = `w-full rounded-lg p-2 border focus:ring-2 focus:ring-blue-500 focus:outline-none
-  disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed
-  dark:disabled:bg-gray-600 dark:disabled:text-gray-400
-  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
-  bg-gray-50 border-gray-300 text-gray-900`;
-
+    disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed
+    dark:disabled:bg-gray-600 dark:disabled:text-gray-400
+    dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
+    bg-gray-50 border-gray-300 text-gray-900`;
 
   useEffect(() => {
     const initForm: FormData = {};
@@ -95,12 +115,11 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
 
     const savedHistorico = localStorage.getItem("historico");
     if (savedHistorico) setHistorico(JSON.parse(savedHistorico));
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     localStorage.setItem("historico", JSON.stringify(historico));
   }, [historico]);
-
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, type, value } = e.target;
@@ -125,7 +144,8 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
     fields.forEach(f => {
       const naoKey = f.name + "Nao";
       if (f.hasNao && item.checks[naoKey]) return;
-      if (f.name === "epsaError") texto += item.checks.epsaNao ? "" : `EPSA - Error Code: ${item.form.epsaError}\nEPSA - Validation Code: ${item.form.epsaValidation}\n`;
+      if (f.name === "epsaError")
+        texto += item.checks.epsaNao ? "" : `EPSA - Error Code: ${item.form.epsaError}\nEPSA - Validation Code: ${item.form.epsaValidation}\n`;
       else if (f.name === "epsaValidation") return;
       else texto += `${lang === "pt" ? f.labelPT : f.labelES}: ${item.form[f.name]}\n`;
     });
@@ -162,10 +182,10 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
           if (f.name === "epsaError") {
             return (
               <div key="epsa" className="sm:col-span-2 border rounded-lg p-3">
-                <label className="font-medium mb-2 block">EPSA</label>
+                <label className="font-medium mb-2 block">{translations[lang].epsa}</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-medium mb-1">Error Code</label>
+                    <label className="block font-medium mb-1">{translations[lang].errorCode}</label>
                     <input
                       type="text"
                       name="epsaError"
@@ -176,7 +196,7 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
                     />
                   </div>
                   <div>
-                    <label className="block font-medium mb-1">Validation Code</label>
+                    <label className="block font-medium mb-1">{translations[lang].validationCode}</label>
                     <input
                       type="text"
                       name="epsaValidation"
@@ -187,14 +207,9 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
                     />
                   </div>
                 </div>
-                <label className="flex items-center gap-2 mt-1">
-                  <input
-                    type="checkbox"
-                    name="epsaNao"
-                    checked={checkboxes.epsaNao || false}
-                    onChange={handleChange}
-                  />
-                  {t.naoSeAplica}
+                <label className="flex items-center gap-2 mt-1 text-sm text-blue-600">
+                  <input type="checkbox" name="epsaNao" checked={checkboxes.epsaNao || false} onChange={handleChange} className="accent-blue-600"/>
+                  {translations[lang].naoSeAplica}
                 </label>
               </div>
             );
@@ -222,11 +237,9 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
                   onChange={handleChange}
                   className={inputClass}
                 >
-                  <option value="">{t.selecione}</option>
+                  <option value="">{translations[lang].selecione}</option>
                   {f.options?.map(o => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
+                    <option key={o} value={o}>{o}</option>
                   ))}
                 </select>
               ) : (
@@ -240,37 +253,38 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
                 />
               )}
               {f.hasNao && (
-                <input
-                  type="checkbox"
-                  name={naoKey}
-                  checked={checkboxes[naoKey] || false}
-                  onChange={handleChange}
-                />
-
+                <label className="flex items-center gap-2 mt-1 text-sm text-blue-600">
+                  <input
+                    type="checkbox"
+                    name={naoKey}
+                    checked={checkboxes[naoKey] || false}
+                    onChange={handleChange}
+                    className="accent-blue-600"
+                  />
+                  {translations[lang].naoSeAplica}
+                </label>
               )}
             </div>
           );
         })}
 
-        {/* Botões */}
         <div className="flex gap-2 sm:col-span-2 mt-2">
           <button type="submit" className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-            {t.gerarLog}
+            {translations[lang].gerarLog}
           </button>
           <button type="button" onClick={limparFormulario} className="flex-1 bg-gray-300 text-gray-900 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors">
-            {t.limparFormulario}
+            {translations[lang].limparFormulario}
           </button>
         </div>
       </form>
 
-      {/* Resumo */}
       {showResumo && (
         <div className={`mt-8 rounded-xl p-4 border ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"}`}>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold">{t.historicoTitulo}</h3>
+            <h3 className="text-lg font-semibold">{translations[lang].historicoTitulo}</h3>
             <button onClick={() => handleCopy({ form: formData, checks: checkboxes })} type="button"
               className={`text-sm px-3 py-1 rounded-md font-medium border transition-colors duration-200 ${copied ? "bg-green-600 text-white border-green-600" : "bg-blue-600 text-white border-blue-600 hover:bg-blue-700"}`}>
-              {copied ? t.copiado : t.copiar}
+              {copied ? translations[lang].copiado : translations[lang].copiar}
             </button>
           </div>
           <pre className="text-sm whitespace-pre-wrap">
@@ -288,7 +302,7 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
       {historico.length > 0 && (
         <div className={`mt-8 rounded-xl p-4 border ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"}`}>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold">{t.historicoTitulo}</h3>
+            <h3 className="text-lg font-semibold">{translations[lang].historicoTitulo}</h3>
             <button onClick={limparHistorico} className="text-sm text-red-600 hover:underline">🗑️ Reset</button>
           </div>
           {historico.map((item, idx) => (
@@ -297,7 +311,7 @@ export default function FormSection({ lang, theme }: FormSectionProps) {
                 <span>{item.form.nomeTecnico} — {item.form.numeroChamado} / {item.form.serviceTag}</span>
                 <button type="button" className="ml-2 text-sm px-2 py-1 rounded-md font-medium border bg-blue-600 text-white hover:bg-blue-700"
                   onClick={async (e) => { e.stopPropagation(); await handleCopy(item); }}>
-                  {t.copiar}
+                  {translations[lang].copiar}
                 </button>
               </summary>
               <pre className="text-sm whitespace-pre-wrap mt-1">
