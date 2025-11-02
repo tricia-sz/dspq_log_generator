@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## DSPQ Log - Gerador de log da equipe de DSPQ DELL / Foundever
 
-## Getting Started
+ ### SITE EM PRODUÇÃO:
 
-First, run the development server:
+🌏 [https://dspq.netlify.app](https://dspq.netlify.app) 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🖥️ Como rodar este projeto 🖥️
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Execução:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Clone este repositório:
 
-## Learn More
+   ```sh
+   git clone git@github.com:tricia-sz/DSPQ_log_generator.git
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Acesse o diretório do projeto:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```sh
+   cd DSPQ_log_generator
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Instalando as libs.
+  ```sh
+  npm install
+   ```
+3. Rodando o projeto no localhost.
+  ```sh
+  npm dev
+   ```
+## 🗒️ Features 🗒️
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## 💎 Links úteis 💎
+- [Next.js](https://nextjs.org/docs)
+- [TypeScript](https://www.typescriptlang.org/docs)
+
+<img width="1269" height="1268" alt="image" src="https://github.com/user-attachments/assets/39dbab40-24bc-4df2-9643-5b64e45deb67" />
+<img width="1084" height="1120" alt="image" src="https://github.com/user-attachments/assets/d3c2be48-1086-474f-a2b8-47f5d2993195" />
+<img width="1226" height="883" alt="image" src="https://github.com/user-attachments/assets/41e47732-f309-42d5-b5f8-9ccf81e1ac29" />
+
+<div align="center">
+<div data-badges>
+ <img src="https://img.shields.io/badge/next.js-%23000000.svg?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" /> 
+  <img src="https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+</div>
+</div>
+
+
