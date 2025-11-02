@@ -38,9 +38,13 @@
 - [Next.js](https://nextjs.org/docs)
 - [TypeScript](https://www.typescriptlang.org/docs)
 
-<img width="1269" height="1268" alt="image" src="https://github.com/user-attachments/assets/39dbab40-24bc-4df2-9643-5b64e45deb67" />
-<img width="1084" height="1120" alt="image" src="https://github.com/user-attachments/assets/d3c2be48-1086-474f-a2b8-47f5d2993195" />
-<img width="1226" height="883" alt="image" src="https://github.com/user-attachments/assets/41e47732-f309-42d5-b5f8-9ccf81e1ac29" />
+<img width="1026" height="1159" alt="image" src="https://github.com/user-attachments/assets/117831fc-1a14-4c46-89ab-06df3c0df54f" />
+<img width="1027" height="1118" alt="image" src="https://github.com/user-attachments/assets/bde9a9c8-85e7-4011-91d4-5e4446cdc57f" />
+<img width="1016" height="915" alt="image" src="https://github.com/user-attachments/assets/bcd20fa7-c643-4cee-bf00-2e7fc5fe7aea" />
+
+
+
+
 
 <div align="center">
 <div data-badges>
