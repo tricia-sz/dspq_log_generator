@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import logo from "../../public/foudever.jpeg";
-
+import logoFoundever from "../../public/foudever.jpeg";
+import logoDell from "../../public/logodell.png";
 type Lang = "pt" | "es";
 
 interface HeaderProps {
@@ -16,20 +16,33 @@ export default function Header({ lang, setLang, theme, setTheme }: HeaderProps) 
   return (
     <header
       className={`mb-6 py-4 transition-colors flex flex-col items-center justify-center gap-3 text-center 
-      ${theme === "dark"
-        ? "bg-gray-800 text-gray-300 border-b border-gray-700"
-        : "bg-gray-50 text-gray-700 border-b border-gray-200"}`}
+      ${
+        theme === "dark"
+          ? "bg-gray-800 text-gray-300 border-b border-gray-700"
+          : "bg-gray-50 text-gray-700 border-b border-gray-200"
+      }`}
     >
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 flex-wrap">
         <Image
-          src={logo}
-          alt="Logo DSPQ"
+          src={logoFoundever}
+          alt="Logo Foundever"
           width={40}
           height={40}
           className="rounded-md"
           priority
         />
-        <h1 className="text-2xl font-semibold">DSPQ - Form. Técnico</h1>
+
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-semibold">DSPQ - Form. Técnico</h1>
+          <Image
+            src={logoDell}
+            alt="Dell Logo"
+            width={45}
+            height={45}
+            className="opacity-90 transition-transform hover:scale-105 rounded-md"
+            priority
+          />
+        </div>
       </div>
 
       <div className="flex items-center justify-center gap-2 mt-2 flex-wrap">
