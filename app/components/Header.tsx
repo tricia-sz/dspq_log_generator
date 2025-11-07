@@ -26,8 +26,8 @@ export default function Header({ lang, setLang, theme, setTheme }: HeaderProps) 
         <Image
           src={logoFoundever}
           alt="Logo Foundever"
-          width={40}
-          height={40}
+          width={45}
+          height={45}
           className="rounded-md"
           priority
         />
@@ -37,8 +37,8 @@ export default function Header({ lang, setLang, theme, setTheme }: HeaderProps) 
           <Image
             src={logoDell}
             alt="Dell Logo"
-            width={40}
-            height={40}
+            width={45}
+            height={45}
             className="opacity-90 transition-transform hover:scale-105 rounded-md"
             priority
           />
