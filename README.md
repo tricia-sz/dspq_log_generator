@@ -1,4 +1,4 @@
-## DSPQ Log - Gerador de log da equipe de DSPQ DELL / Foundever
+## DSPQ Log - Gerador de log da equipe de DSPQ DELL (#Work4Dell) / Foundever
 
  ### SITE EM PRODUÇÃO:
 
