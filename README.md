@@ -31,15 +31,10 @@
   ```sh
   npm dev
    ```
-## 🗒️ Features 🗒️
 
+<img width="1026" height="1168" alt="image" src="https://github.com/user-attachments/assets/08050001-c545-4c95-90fd-0d48fe24d8cf" />
+<img width="1028" height="1122" alt="image" src="https://github.com/user-attachments/assets/027a9905-d41b-4e1f-be72-30bc837ae431" />
 
-## 💎 Links úteis 💎
-- [Next.js](https://nextjs.org/docs)
-- [TypeScript](https://www.typescriptlang.org/docs)
-
-<img width="1026" height="1159" alt="image" src="https://github.com/user-attachments/assets/117831fc-1a14-4c46-89ab-06df3c0df54f" />
-<img width="1027" height="1118" alt="image" src="https://github.com/user-attachments/assets/bde9a9c8-85e7-4011-91d4-5e4446cdc57f" />
 <img width="1016" height="915" alt="image" src="https://github.com/user-attachments/assets/bcd20fa7-c643-4cee-bf00-2e7fc5fe7aea" />
 
 
@@ -51,6 +46,10 @@
  <img src="https://img.shields.io/badge/next.js-%23000000.svg?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" /> 
   <img src="https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
 </div>
+
+ ## 💎 Links úteis 💎
+- [Next.js](https://nextjs.org/docs)
+- [TypeScript](https://www.typescriptlang.org/docs)
 </div>
 
 
