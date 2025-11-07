@@ -10,11 +10,16 @@ export default function Home() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (savedTheme) setTheme(savedTheme);
-  }, []);
+    if (typeof window === "undefined") return;
 
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    if (savedTheme && savedTheme !== theme) {
+      setTimeout(() => setTheme(savedTheme), 0);
+    }
+  }, []);
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     localStorage.setItem("theme", theme);
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
@@ -22,7 +27,7 @@ export default function Home() {
   return (
     <>
       <Header lang={lang} setLang={setLang} theme={theme} setTheme={setTheme} />
-      <FormSection lang={lang} theme={theme} />
+        <FormSection lang={lang} theme={theme} />
       <Footer theme={theme} />
     </>
   );
